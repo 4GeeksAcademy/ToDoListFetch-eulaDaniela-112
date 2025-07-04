@@ -10,11 +10,11 @@ const Home = () => {
 
 
 	useEffect(() => {
-		fetch('https://playground.4geeks.com/todo/users/daniela')
+		fetch('https://playground.4geeks.com/todo/todos/daniela')
 		.then(response => response.json())
 		.then(data => {
 			console.log(data);
-			setTasks(data);
+			setTasks(data.todos);
 		})
 		.catch(error => console.error(error));
 	}, []);
@@ -22,16 +22,15 @@ const Home = () => {
 	function addTask(event) {
 		if (event.key === "Enter" && newTask.trim() !== '') {
 			fetch('https://playground.4geeks.com/todo/users/daniela', {
-				method: "POST",
+				method: "GET",
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify ({task : newTask})
+				body: JSON.stringify ({label: newTask, is_done: false})
 				})
-
 				.then(response => response.json())
 				.then(data => {
-					setTasks([... tasks,data]);
+					setTasks([... tasks, data]);
 					setnewTask('');
 				})
 				.catch(error => console.error(error));
@@ -40,12 +39,12 @@ const Home = () => {
 	
 
 	function deleteTask(index) {
-		fetch('https://playground.4geeks.com/todo/users/daniela' , {
+		fetch(`https://playground.4geeks.com/todo/users/daniela${id}` , {
 			method: 'DELETE'
 		})
 		.then(response => response.json())
 		.then(() => {
-			setTasks(tasks.filter((task, i) => i !== index));
+			setTasks(tasks.filter((task) => task.id !== id));
 		})
 		.catch(error => console.error(error));
 
